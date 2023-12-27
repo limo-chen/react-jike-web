@@ -6,7 +6,7 @@ import {
   LogoutOutlined,
 } from "@ant-design/icons";
 import "./index.scss";
-import { Outlet, useNavigate } from "react-router-dom";
+import { Outlet, useNavigate, useLocation } from "react-router-dom";
 
 const { Header, Sider } = Layout;
 
@@ -31,10 +31,12 @@ const items = [
 const GeekLayout = () => {
   const navigate = useNavigate();
   const onMenuClick = (item) => {
-    console.log("菜单被点击了", item);
     const path = item.key;
     navigate(path);
   };
+  const location = useLocation();
+  console.log(location.pathname);
+  const selectedkey = location.pathname;
   return (
     <Layout>
       <Header className="header">
@@ -53,7 +55,7 @@ const GeekLayout = () => {
           <Menu
             mode="inline"
             theme="dark"
-            defaultSelectedKeys={["1"]}
+            selectedKeys={selectedkey}
             items={items}
             style={{ height: "100%", borderRight: 0 }}
             onClick={onMenuClick}
