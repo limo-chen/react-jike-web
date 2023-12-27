@@ -1,5 +1,8 @@
 import axios from "axios";
 import { getToken } from "./token";
+import { removeToken } from "@/utils";
+import router from "./../router/index";
+
 //根域名配置
 // 响应时间
 // 请求拦截器，响应拦截器
@@ -36,6 +39,15 @@ request.interceptors.response.use(
   (error) => {
     // 超出 2xx 范围的状态码都会触发该函数。
     // 对响应错误做点什么
+    // 监控401错误，先打印出来
+    console.dir(error);
+
+    if (error.response.request.status === 401) {
+      removeToken();
+      router.navigate("/login");
+      // 调用window的方法：强制刷新
+      window.location.reload();
+    }
     return Promise.reject(error);
   }
 );

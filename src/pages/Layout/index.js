@@ -33,11 +33,12 @@ const items = [
 const GeekLayout = () => {
   const navigate = useNavigate();
   const onMenuClick = (item) => {
+    console.log(item);
     const path = item.key;
     navigate(path);
   };
   const location = useLocation();
-  console.log(location.pathname);
+  // console.log(location.pathname);
   const selectedkey = location.pathname;
 
   //一进来就执行，触发个人用户信息 useEffect钩子
