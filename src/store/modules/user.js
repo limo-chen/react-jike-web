@@ -1,6 +1,7 @@
 // 和用户相关的状态管理
 import { createSlice } from "@reduxjs/toolkit";
 import { request, setToken as _setToken, getToken, removeToken } from "@/utils";
+import { getProfileAPI, loginAPI } from "@/apis/user.js";
 
 const userStore = createSlice({
   name: "user",
@@ -37,7 +38,7 @@ const useReducer = userStore.reducer;
 const fetchLogin = (loginForm) => {
   return async (dispatch) => {
     // 发送异步请求
-    const res = await request.post("/authorizations", loginForm);
+    const res = await loginAPI(loginForm);
     console.log(loginForm);
     //提交同步action进行token的存入
     dispatch(setToken(res.data.token));
@@ -47,7 +48,7 @@ const fetchLogin = (loginForm) => {
 const fetchUserInfo = () => {
   return async (dispatch) => {
     //1，获取个人信息的接口调用
-    const res = await request.get("/user/profile");
+    const res = await getProfileAPI();
     // 2，拿到个人信息的dispatch action 存下来
     dispatch(setUseInfo(res.data));
   };
