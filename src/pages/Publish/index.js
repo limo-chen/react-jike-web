@@ -14,7 +14,7 @@ import { Link } from "react-router-dom";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import "./index.scss";
-import { getChannelAPI } from "@/apis/article.js";
+import { getChannelAPI, createArticleAPI } from "@/apis/article.js";
 import { useEffect, useState } from "react";
 
 const { Option } = Select;
@@ -32,6 +32,23 @@ const Publish = () => {
     // 调用函数
     getChannelList();
   }, []);
+
+  const onFinish = (values) => {
+    console.log(values);
+    const { title, content, channel_id } = values;
+    // 按照接口文档的格式处理表单数据
+    const reqData = {
+      title,
+      content,
+      cover: {
+        type: 0,
+        images: "",
+      },
+      channel_id,
+    };
+    // 调用接口提交
+    createArticleAPI(reqData);
+  };
   return (
     <div className="publish">
       <Card
@@ -48,6 +65,7 @@ const Publish = () => {
           labelCol={{ span: 4 }}
           wrapperCol={{ span: 16 }}
           initialValues={{ type: 1 }}
+          onFinish={onFinish}
         >
           <Form.Item
             label="标题"
