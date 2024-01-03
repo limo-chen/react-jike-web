@@ -15,3 +15,12 @@ export function createArticleAPI(data) {
     data,
   });
 }
+
+// 获取文章列表 axios里面的params参数是通过params选项来设置的
+export function getArticleListAPI(params) {
+  return request({
+    url: "/mp/articles",
+    method: "GET",
+    params,
+  });
+}
