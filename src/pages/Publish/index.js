@@ -55,6 +55,12 @@ const Publish = () => {
     console.log("正在上传", value);
     setImageList(value.fileList);
   };
+  // 获取当前封面类型
+  const [type, setType] = useState(0);
+  const onTypeChange = (e) => {
+    console.log("切换封面了", e.target.value);
+    setType(e.target.value);
+  };
   return (
     <div className="publish">
       <Card
@@ -82,7 +88,7 @@ const Publish = () => {
           </Form.Item>
           <Form.Item label="封面">
             <Form.Item name="type">
-              <Radio.Group>
+              <Radio.Group onChange={onTypeChange}>
                 <Radio value={1}>单图</Radio>
                 <Radio value={3}>三图</Radio>
                 <Radio value={0}>无图</Radio>
@@ -90,17 +96,19 @@ const Publish = () => {
             </Form.Item>
             {/* listType决定选择文件框的外观样式  showUploadList控制上传列表 */}
             {/* 当配置好name，action，会在用户选择好图片后自动上传并触发oonChange函数  onChange会在整个上传过程中不断执行的*/}
-            <Upload
-              name="image"
-              listType="picture-card"
-              showUploadList
-              action={"http://geek.itheima.net/v1_0/upload"}
-              onChange={onUploadChange}
-            >
-              <div style={{ marginTop: 8 }}>
-                <PlusOutlined />
-              </div>
-            </Upload>
+            {type > 0 && (
+              <Upload
+                name="image"
+                listType="picture-card"
+                showUploadList
+                action={"http://geek.itheima.net/v1_0/upload"}
+                onChange={onUploadChange}
+              >
+                <div style={{ marginTop: 8 }}>
+                  <PlusOutlined />
+                </div>
+              </Upload>
+            )}
           </Form.Item>
           <Form.Item
             label="频道"
