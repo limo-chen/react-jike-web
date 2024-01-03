@@ -8,6 +8,7 @@ import {
   Upload,
   Space,
   Select,
+  message,
 } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
 import { Link } from "react-router-dom";
@@ -35,14 +36,16 @@ const Publish = () => {
 
   const onFinish = (values) => {
     console.log(values);
+    if (imageList.length !== type)
+      return message.warning("封面类型与图片数量不匹配");
     const { title, content, channel_id } = values;
     // 按照接口文档的格式处理表单数据
     const reqData = {
       title,
       content,
       cover: {
-        type: 0,
-        images: "",
+        type: type, //封面模式
+        images: imageList.map((item) => item.response.data.url), //图片列表
       },
       channel_id,
     };
