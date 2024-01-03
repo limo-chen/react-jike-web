@@ -49,6 +49,12 @@ const Publish = () => {
     // 调用接口提交
     createArticleAPI(reqData);
   };
+  //上传回调  value.fileList拿到最终上传的文件列表，然后存入imageList中
+  const [imageList, setImageList] = useState([]);
+  const onUploadChange = (value) => {
+    console.log("正在上传", value);
+    setImageList(value.fileList);
+  };
   return (
     <div className="publish">
       <Card
@@ -73,6 +79,28 @@ const Publish = () => {
             rules={[{ required: true, message: "请输入文章标题" }]}
           >
             <Input placeholder="请输入文章标题" style={{ width: 400 }} />
+          </Form.Item>
+          <Form.Item label="封面">
+            <Form.Item name="type">
+              <Radio.Group>
+                <Radio value={1}>单图</Radio>
+                <Radio value={3}>三图</Radio>
+                <Radio value={0}>无图</Radio>
+              </Radio.Group>
+            </Form.Item>
+            {/* listType决定选择文件框的外观样式  showUploadList控制上传列表 */}
+            {/* 当配置好name，action，会在用户选择好图片后自动上传并触发oonChange函数  onChange会在整个上传过程中不断执行的*/}
+            <Upload
+              name="image"
+              listType="picture-card"
+              showUploadList
+              action={"http://geek.itheima.net/v1_0/upload"}
+              onChange={onUploadChange}
+            >
+              <div style={{ marginTop: 8 }}>
+                <PlusOutlined />
+              </div>
+            </Upload>
           </Form.Item>
           <Form.Item
             label="频道"
