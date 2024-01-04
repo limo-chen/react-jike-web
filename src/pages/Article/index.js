@@ -7,6 +7,7 @@ import {
   Radio,
   DatePicker,
   Select,
+  onFinish,
 } from "antd";
 // 日期选择器中文显示
 import locale from "antd/es/date-picker/locale/zh_CN";
@@ -97,17 +98,46 @@ const Article = () => {
       title: "wkwebview离线化加载h5资源解决方案",
     },
   ];
+
+  // 1，准备参数
+  const [reqData, setReqData] = useState({
+    status: "",
+    channel_id: "",
+    begin_pubdate: "",
+    end_pubdate: "",
+    page: "",
+    per_page: "",
+  });
   // 获取文章列表
   const [list, setList] = useState([]);
   const [count, setCount] = useState(0);
   useEffect(() => {
     async function getList() {
-      const res = await getArticleListAPI();
+      const res = await getArticleListAPI(reqData);
       setList(res.data.results);
       setCount(res.data.total_count);
     }
     getList();
-  }, []);
+  }, [reqData]);
+
+  // 筛选功能
+
+  // 获取用户选择的筛选数据  onFinish是antd的表单提交事件
+  const onFinish = (values) => {
+    console.log("Success:", values);
+    // 把表单收集到的数据放到参数中
+    setReqData({
+      ...reqData,
+      channel_id: values.channel_id,
+      status: values.status,
+      // 0是开始时间 1是结束时间
+      begin_pubdate: values.date[0].format("YYYY-MM-DD"),
+      end_pubdate: values.date[1].format("YYYY-MM-DD"),
+    });
+    // 重新拉取文章列表+渲染列表 复用
+    // reqData是依赖项，当reqData依赖项发生变化时，useEffect就会重新执行
+  };
+
   return (
     <div>
       <Card
@@ -121,7 +151,7 @@ const Article = () => {
         }
         style={{ marginBottom: 20 }}
       >
-        <Form initialValues={{ status: "" }}>
+        <Form initialValues={{ status: "" }} onFinish={onFinish}>
           <Form.Item label="状态" name="status">
             <Radio.Group>
               <Radio value={""}>全部</Radio>
