@@ -8,6 +8,7 @@ import {
   DatePicker,
   Select,
   onFinish,
+  Popconfirm,
 } from "antd";
 // 日期选择器中文显示
 import locale from "antd/es/date-picker/locale/zh_CN";
@@ -16,7 +17,7 @@ import { Table, Tag, Space } from "antd";
 import { EditOutlined, DeleteOutlined } from "@ant-design/icons";
 import img404 from "@/assets/error.png";
 import { useChannel } from "@/hooks/useChannel";
-import { getArticleListAPI } from "@/apis/article";
+import { getArticleListAPI, delArticleAPI } from "@/apis/article";
 import { useState, useEffect } from "react";
 
 const { Option } = Select;
@@ -72,12 +73,21 @@ const Article = () => {
         return (
           <Space size="middle">
             <Button type="primary" shape="circle" icon={<EditOutlined />} />
-            <Button
-              type="primary"
-              danger
-              shape="circle"
-              icon={<DeleteOutlined />}
-            />
+            <Popconfirm
+              title="删除文章"
+              description="确认删除文章么？"
+              // 把data参数传下去
+              onConfirm={() => onConfirm(data)}
+              okText="Yes"
+              cancelText="No"
+            >
+              <Button
+                type="primary"
+                danger
+                shape="circle"
+                icon={<DeleteOutlined />}
+              />
+            </Popconfirm>
           </Space>
         );
       },
@@ -147,6 +157,16 @@ const Article = () => {
     });
   };
 
+  // onConfirm删除列表选项   这里接受一下data，
+  const onConfirm = async (data) => {
+    console.log("删除点击了", data.id);
+    // async用来保证删除列表接口调完之后才去更新列表渲染
+    await delArticleAPI(data.id);
+    setReqData({
+      // 因为没有什么要改的参数，只想做一下重新拉取渲染，所以把原本的参数再拉过就行
+      ...reqData,
+    });
+  };
   return (
     <div>
       <Card

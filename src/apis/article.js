@@ -24,3 +24,11 @@ export function getArticleListAPI(params) {
     params,
   });
 }
+
+// 删除列表
+export function delArticleAPI(id) {
+  return request({
+    url: `/mp/articles/${id}`,
+    method: "DELETE",
+  });
+}
