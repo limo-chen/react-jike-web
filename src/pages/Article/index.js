@@ -137,6 +137,15 @@ const Article = () => {
     // 重新拉取文章列表+渲染列表 复用
     // reqData是依赖项，当reqData依赖项发生变化时，useEffect就会重新执行
   };
+  // 分页
+  const onPageChange = (e) => {
+    console.log(e);
+    // 修改参数依赖项 引发火速局的重新获取列表渲染
+    setReqData({
+      ...reqData,
+      page: e,
+    });
+  };
 
   return (
     <div>
@@ -183,7 +192,16 @@ const Article = () => {
         </Form>
       </Card>
       <Card title={`根据筛选条件共查询到 ${count} 条结果：`}>
-        <Table rowKey="id" columns={columns} dataSource={list} />
+        <Table
+          rowKey="id"
+          columns={columns}
+          dataSource={list}
+          pagination={{
+            total: count,
+            pageSize: reqData.per_page,
+            onChange: onPageChange,
+          }}
+        />
       </Card>
     </div>
   );
