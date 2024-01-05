@@ -32,3 +32,11 @@ export function delArticleAPI(id) {
     method: "DELETE",
   });
 }
+
+// 获取文章详情  id是我们需要的参数，当实参放过来就行  method: "GET"这个不写也行，默认就是get
+export function getArticleByAPI(id) {
+  return request({
+    url: `/mp/articles/${id}`,
+    method: "GET",
+  });
+}

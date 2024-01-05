@@ -11,12 +11,12 @@ import {
   message,
 } from "antd";
 import { PlusOutlined } from "@ant-design/icons";
-import { Link } from "react-router-dom";
+import { Link, useSearchParams } from "react-router-dom";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import "./index.scss";
-import { createArticleAPI } from "@/apis/article.js";
-import { useState } from "react";
+import { createArticleAPI, getArticleByAPI } from "@/apis/article.js";
+import { useEffect, useState } from "react";
 import { useChannel } from "@/hooks/useChannel";
 
 const { Option } = Select;
@@ -55,6 +55,20 @@ const Publish = () => {
     console.log("切换封面了", e.target.value);
     setType(e.target.value);
   };
+
+  // 回填数据 id是我们需要的参数，放过来就行
+  const [searchParams] = useSearchParams();
+  const articleId = searchParams.get("id");
+  const [form] = Form.useForm();
+  useEffect(() => {
+    // 1，通过id获取文章详情数据
+    async function getArticleDetail() {
+      const res = await getArticleByAPI(articleId);
+      form.setFieldsValue(res.data);
+    }
+    getArticleDetail();
+    // 2，调用实例方法 完成回填
+  }, [articleId, form]);
   return (
     <div className="publish">
       <Card
@@ -72,6 +86,7 @@ const Publish = () => {
           wrapperCol={{ span: 16 }}
           initialValues={{ type: 1 }}
           onFinish={onFinish}
+          form={form}
         >
           <Form.Item
             label="标题"
