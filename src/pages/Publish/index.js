@@ -49,7 +49,7 @@ const Publish = () => {
     console.log("正在上传", value);
     setImageList(value.fileList);
   };
-  // 获取当前封面类型
+  // 切换图片封面类型
   const [type, setType] = useState(0);
   const onTypeChange = (e) => {
     console.log("切换封面了", e.target.value);
@@ -60,11 +60,26 @@ const Publish = () => {
   const [searchParams] = useSearchParams();
   const articleId = searchParams.get("id");
   const [form] = Form.useForm();
+
   useEffect(() => {
     // 1，通过id获取文章详情数据
     async function getArticleDetail() {
       const res = await getArticleByAPI(articleId);
-      form.setFieldsValue(res.data);
+      const data = res.data;
+      const { cover } = data;
+      form.setFieldsValue({
+        ...data,
+        type: cover.type,
+      });
+
+      //回填照片列表
+      setType(cover.type);
+      // 显示图片(格式要求：URL：[{url:图片地址}])
+      setImageList(
+        cover.images.map((url) => {
+          return { url };
+        })
+      );
     }
     getArticleDetail();
     // 2，调用实例方法 完成回填
@@ -113,6 +128,7 @@ const Publish = () => {
                 action={"http://geek.itheima.net/v1_0/upload"}
                 onChange={onUploadChange}
                 maxCount={type}
+                fileList={imageList}
               >
                 <div style={{ marginTop: 8 }}>
                   <PlusOutlined />
