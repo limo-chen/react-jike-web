@@ -15,7 +15,11 @@ import { Link, useSearchParams } from "react-router-dom";
 import ReactQuill from "react-quill";
 import "react-quill/dist/quill.snow.css";
 import "./index.scss";
-import { createArticleAPI, getArticleByAPI } from "@/apis/article.js";
+import {
+  createArticleAPI,
+  getArticleByAPI,
+  updateArticleAPI,
+} from "@/apis/article.js";
 import { useEffect, useState } from "react";
 import { useChannel } from "@/hooks/useChannel";
 
@@ -36,13 +40,28 @@ const Publish = () => {
       content,
       cover: {
         type: type, //封面模式
-        images: imageList.map((item) => item.response.data.url), //图片列表
+
+        //这里的URL处理逻辑只是在新增时候的逻辑
+        // 编辑时候需要做处理
+        images: imageList.map((item) => {
+          if (item.response) {
+            return item.response.data.url;
+          } else {
+          }
+          return item.url;
+        }), //图片列表
       },
       channel_id,
     };
     // 调用接口提交
-    createArticleAPI(reqData);
+    // 处理调用不同接口 新增接口vs编辑接口
+    if (articleId) {
+      updateArticleAPI({ ...reqData, id: articleId });
+    } else {
+      createArticleAPI(reqData);
+    }
   };
+
   //上传回调  value.fileList拿到最终上传的文件列表，然后存入imageList中
   const [imageList, setImageList] = useState([]);
   const onUploadChange = (value) => {
